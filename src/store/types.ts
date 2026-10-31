@@ -9,9 +9,9 @@ export type FileItemType =
 export type SharePermission = "read" | "write";
 
 export interface FilesResponse {
-    items: FileItem[];
-    next_cursor: string | null;
-    total: number;
+  items: FileItem[];
+  next_cursor: string | null;
+  total: number;
 }
 
 export interface FileItem {
@@ -32,4 +32,10 @@ export interface FileDetail extends FileItem {
     email: string;
     permission: SharePermission;
   }>;
+}
+
+export interface MeResponse {
+  email: string;
+  id: string;
+  name: string;
 }

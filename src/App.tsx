@@ -1,11 +1,18 @@
-//import { useAuthMutation, useGetFilesQuery } from "./store/store";
-import Login from "./features/Login/Login";
+import { Navigate, Outlet } from "react-router";
+import { useMeQuery } from "./store/store";
 
 function App() {
-  //const [login] = useAuthMutation();
+  const { data, isLoading } = useMeQuery();
 
-  // useGetFilesQuery();
-  return <Login />;
+  if (isLoading) {
+    return <div role="status">Loading…</div>;
+  }
+
+  if (!data) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 }
 
 export default App;
