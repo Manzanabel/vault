@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import App from "./App";
 import Login from "./features/Login/Login";
-import { authMiddleware } from "./middleware/auth";
+import { authMiddleware } from "./store/middleware/auth";
 
 export const router = createBrowserRouter([
   {
