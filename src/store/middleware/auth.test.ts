@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { apiSlice, store } from "../store/store";
+import { apiSlice, store } from "../store";
 import { authMiddleware } from "./auth";
 
 const jsonResponse = (body: unknown, status: number) =>
