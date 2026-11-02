@@ -1,13 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { FilesResponse, MeResponse } from "./types";
+import { baseQueryWithReauth } from "./baseQueryWithReauth/baseQueryWithReauth";
 
 export const apiSlice = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
-    credentials: "include",
-  }),
+  baseQuery: baseQueryWithReauth(
+    fetchBaseQuery({
+      baseUrl: import.meta.env.VITE_API_URL,
+      credentials: "include",
+    }),
+  ),
   endpoints: (builder) => ({
     auth: builder.mutation<MeResponse, { email: string; password: string }>({
       query: ({ email, password }) => ({
@@ -26,7 +29,7 @@ export const apiSlice = createApi({
         method: "POST",
       }),
     }),
-    getFiles: builder.query<FilesResponse | unknown, void>({
+    getFiles: builder.query<FilesResponse, void>({
       query: () => "/files",
     }),
   }),
