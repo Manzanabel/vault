@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import App from "./App";
 import Login from "./features/Login/Login";
+import FileList from "./features/FileList/FileList";
 import { authMiddleware } from "./store/middleware/auth";
 
 export const router = createBrowserRouter([
@@ -21,7 +22,7 @@ export const router = createBrowserRouter([
           />
         ),
       },
-      { path: "/file-list", element: <div>File List</div> },
+      { path: "/file-list", element: <FileList /> },
     ],
   },
 ]);
