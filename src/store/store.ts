@@ -18,6 +18,13 @@ export const apiSlice = createApi({
     }),
     me: builder.query<MeResponse, void>({
       query: () => "/auth/me",
+      keepUnusedDataFor: Infinity, // Session-long data; cleared explicitly by resetApiState on logout.
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
     }),
     getFiles: builder.query<FilesResponse | unknown, void>({
       query: () => "/files",
@@ -28,6 +35,7 @@ export const apiSlice = createApi({
 export const { useGetFilesQuery } = apiSlice;
 export const { useAuthMutation } = apiSlice;
 export const { useMeQuery } = apiSlice;
+export const { useLogoutMutation } = apiSlice;
 
 export const store = configureStore({
   reducer: {

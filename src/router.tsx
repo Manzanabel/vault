@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import App from "./App";
 import Login from "./features/Login/Login";
 import { authMiddleware } from "./middleware/auth";
@@ -11,6 +11,17 @@ export const router = createBrowserRouter([
   {
     middleware: [authMiddleware],
     Component: App,
-    children: [{ path: "/file-list", element: <div>Files List</div> }],
+    children: [
+      {
+        index: true,
+        element: (
+          <Navigate
+            to="/file-list"
+            replace
+          />
+        ),
+      },
+      { path: "/file-list", element: <div>File List</div> },
+    ],
   },
 ]);
