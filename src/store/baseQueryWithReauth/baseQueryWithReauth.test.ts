@@ -9,7 +9,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { apiSlice } from "../store";
 import { baseQueryWithReauth } from "./baseQueryWithReauth";
 
-type Result = QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>;
+type Result = QueryReturnValue<
+  unknown,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta
+>;
 
 const REFRESH_URL = "/auth/refresh";
 

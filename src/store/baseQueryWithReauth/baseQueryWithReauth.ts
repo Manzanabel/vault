@@ -37,7 +37,11 @@ export const baseQueryWithReauth =
           // Raw baseQuery, not an endpoint: avoids recursion and cache entries.
           // Promise.resolve: baseQuery may return a PromiseLike, which has no .finally.
           refreshPromise = Promise.resolve(
-            baseQuery({ url: "/auth/refresh", method: "POST" }, api, extraOptions),
+            baseQuery(
+              { url: "/auth/refresh", method: "POST" },
+              api,
+              extraOptions,
+            ),
           ).finally(() => {
             refreshPromise = null;
           });

@@ -15,12 +15,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <Navigate
-            to="/file-list"
-            replace
-          />
-        ),
+        element: <Navigate to="/file-list" replace />,
       },
       { path: "/file-list", element: <FileList /> },
     ],

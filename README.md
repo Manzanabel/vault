@@ -31,19 +31,19 @@ The app runs on `http://localhost:5173`.
 
 ### Environment variables
 
-| Variable | Description | Default |
-| --- | --- | --- |
+| Variable       | Description               | Default                     |
+| -------------- | ------------------------- | --------------------------- |
 | `VITE_API_URL` | Base URL of the Vault API | `http://localhost:3001/api` |
 
 ### Scripts
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the dev server (no type-checking) |
-| `npm run build` | Type-check with `tsc -b`, then build for production |
-| `npm run preview` | Serve the production build locally |
-| `npm run lint` | Lint the codebase |
-| `npm test` | Run the test suite |
+| Command           | Description                                         |
+| ----------------- | --------------------------------------------------- |
+| `npm run dev`     | Start the dev server (no type-checking)             |
+| `npm run build`   | Type-check with `tsc -b`, then build for production |
+| `npm run preview` | Serve the production build locally                  |
+| `npm run lint`    | Lint the codebase                                   |
+| `npm test`        | Run the test suite                                  |
 
 ## Design decisions
 

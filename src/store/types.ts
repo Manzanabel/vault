@@ -1,10 +1,5 @@
 export type FileItemType =
-  | "pdf"
-  | "image"
-  | "doc"
-  | "sheet"
-  | "archive"
-  | "other";
+  "pdf" | "image" | "doc" | "sheet" | "archive" | "other";
 
 export type SharePermission = "read" | "write";
 

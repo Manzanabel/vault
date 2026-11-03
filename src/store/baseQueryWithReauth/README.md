@@ -22,13 +22,13 @@ A first version dispatched a `refresh` endpoint defined in `apiSlice`. That caus
 
 - **Infinite recursion.** That endpoint's request also goes through `baseQueryWithReauth`. With an expired refresh token, `/auth/refresh` answers 401, so the wrapper tries to refresh again, and so on forever: 401 → refresh → 401 → refresh → … The `else` branch (log out) was never reached.
 - **Cache entries.** Every refresh left a mutation entry in the store that nothing used.
-The `baseQuery` the wrapper receives is the bare `fetchBaseQuery`: it sends the HTTP request and returns `{ data }` or `{ error }`, with no reauth logic and no store access. If the refresh returns 401, you just get `{ error }` and fall into the `else`.
+  The `baseQuery` the wrapper receives is the bare `fetchBaseQuery`: it sends the HTTP request and returns `{ data }` or `{ error }`, with no reauth logic and no store access. If the refresh returns 401, you just get `{ error }` and fall into the `else`.
 
 ### Single-flight: one refresh for concurrent requests
 
 **Problem.** When a screen mounts, several requests go out together (`getFiles`, `me`, `stats`…). If the token has expired, they all get a 401 at almost the same time. A naive wrapper makes each one start its own refresh: 3 requests, 3 refreshes.
 
-With this server it does no harm, because the refresh token isn't rotated. But a server that **rotates** refresh tokens with *reuse detection* invalidates the token on every use. If it receives a token that was already used, it treats it as possible theft and revokes every session. The second and third refresh would then log the user out for no reason.
+With this server it does no harm, because the refresh token isn't rotated. But a server that **rotates** refresh tokens with _reuse detection_ invalidates the token on every use. If it receives a token that was already used, it treats it as possible theft and revokes every session. The second and third refresh would then log the user out for no reason.
 
 **Solution.** `refreshPromise` is a **module-level** variable, not a function-local one:
 
@@ -37,11 +37,11 @@ With this server it does no harm, because the refresh token isn't rotated. But a
 
 Several callers can await the same promise: they all get the same result, and the operation runs only once. So:
 
-| Request | On its 401 | What it does |
-| --- | --- | --- |
+| Request    | On its 401                | What it does                         |
+| ---------- | ------------------------- | ------------------------------------ |
 | `getFiles` | `refreshPromise === null` | Starts the refresh, stores it, waits |
-| `me` | a refresh is in flight | Waits for the same promise |
-| `stats` | a refresh is in flight | Waits for the same promise |
+| `me`       | a refresh is in flight    | Waits for the same promise           |
+| `stats`    | a refresh is in flight    | Waits for the same promise           |
 
 Result: **1 refresh and 3 retries**.
 

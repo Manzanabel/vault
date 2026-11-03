@@ -57,10 +57,7 @@ export default function FileList() {
             <div className="table-row-group">
               {paddingTop > 0 && (
                 <div className="table-row">
-                  <div
-                    className="table-cell"
-                    style={{ height: paddingTop }}
-                  />
+                  <div className="table-cell" style={{ height: paddingTop }} />
                 </div>
               )}
               {virtualRows.map((virtualItem: VirtualItem) => {
