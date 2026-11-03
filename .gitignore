@@ -30,3 +30,6 @@ BACKLOG.md
 *.njsproj
 *.sln
 *.sw?
+
+# Don't ignore: 
+!.vscode/settings.json
