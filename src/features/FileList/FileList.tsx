@@ -1,9 +1,10 @@
-import { useRef, useMemo, useEffect } from "react";
-import { useVirtualizer, type VirtualItem } from "@tanstack/react-virtual";
+import { useRef, useMemo } from "react";
+import { type VirtualItem } from "@tanstack/react-virtual";
 import { useGetFilesInfiniteQuery } from "../../store/store";
 import { formatBytes } from "../../utils/formatBytes";
 import dayjs from "dayjs";
 import type { FileItem } from "../../store/types";
+import useVirtualList from "./useVirtualList";
 
 const headerCell =
   "table-cell border-b border-slate-200 bg-slate-50 px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-500";
@@ -28,42 +29,15 @@ export default function FileList() {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // oxlint-disable-next-line react/incompatible-library -- no React Compiler in this project; virtualizer is not passed to memoized children
-  const virtualizer = useVirtualizer({
-    count: items?.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 50,
-    useFlushSync: false,
+  const onEndReached = () => {
+    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+  };
+
+  const { virtualRows, paddingTop, paddingBottom } = useVirtualList({
+    count: items.length,
+    onEndReached,
+    parentRef,
   });
-
-  const virtualRows = virtualizer.getVirtualItems();
-
-  // Height of the spacer rows rendered above and below the visible rows
-  const [paddingTop, paddingBottom] =
-    virtualRows.length > 0
-      ? [
-          virtualRows[0].start,
-          virtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end,
-        ]
-      : [0, 0];
-
-  useEffect(() => {
-    const lastItem = virtualRows[virtualRows.length - 1];
-    if (
-      lastItem &&
-      lastItem.index >= items.length - 25 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
-      fetchNextPage();
-    }
-  }, [
-    virtualRows,
-    items.length,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  ]);
 
   return (
     <div className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 py-8">
