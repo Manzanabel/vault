@@ -29,13 +29,22 @@ export const apiSlice = createApi({
         method: "POST",
       }),
     }),
-    getFiles: builder.query<FilesResponse, void>({
-      query: () => "/files",
+    getFiles: builder.infiniteQuery<
+      FilesResponse,
+      string | undefined,
+      string | null
+    >({
+      infiniteQueryOptions: {
+        initialPageParam: null,
+        getNextPageParam: (res) => res.next_cursor ?? null,
+      },
+      query: ({ pageParam }) =>
+        pageParam ? "/files?cursor=" + encodeURIComponent(pageParam) : "/files",
     }),
   }),
 });
 
-export const { useGetFilesQuery } = apiSlice;
+export const { useGetFilesInfiniteQuery } = apiSlice;
 export const { useAuthMutation } = apiSlice;
 export const { useMeQuery } = apiSlice;
 export const { useLogoutMutation } = apiSlice;
