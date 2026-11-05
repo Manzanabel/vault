@@ -1,22 +1,36 @@
 import { useState } from "react";
-import { useAuthMutation } from "../../store/store";
 import { useNavigate } from "react-router";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [auth, { isLoading }] = useAuthMutation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      await auth({ email, password }).unwrap();
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+          credentials: "include",
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Login failed");
+      }
       navigate("/file-list", { replace: true });
     } catch (error) {
       console.error("Error logging in:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

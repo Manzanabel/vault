@@ -12,13 +12,6 @@ export const apiSlice = createApi({
     }),
   ),
   endpoints: (builder) => ({
-    auth: builder.mutation<MeResponse, { email: string; password: string }>({
-      query: ({ email, password }) => ({
-        url: "/auth/login",
-        method: "POST",
-        body: { email, password },
-      }),
-    }),
     me: builder.query<MeResponse, void>({
       query: () => "/auth/me",
       keepUnusedDataFor: Infinity, // Session-long data; cleared explicitly by resetApiState on logout.
@@ -52,7 +45,6 @@ export const apiSlice = createApi({
 });
 
 export const { useGetFilesInfiniteQuery } = apiSlice;
-export const { useAuthMutation } = apiSlice;
 export const { useMeQuery } = apiSlice;
 export const { useLogoutMutation } = apiSlice;
 export const { useGetWsTicketMutation } = apiSlice;

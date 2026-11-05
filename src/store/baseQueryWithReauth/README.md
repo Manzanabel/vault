@@ -72,6 +72,6 @@ The `.finally` is chained **to the refresh promise itself**, not to each caller.
 
 ## Known limitations
 
-- **`/auth/login` also goes through the wrapper.** A wrong password returns 401 and triggers a pointless refresh attempt before the error is returned.
+- A wrong password returns 401 and triggers a pointless refresh attempt before the error is returned.
 - **A network error or 5xx on the refresh logs the user out.** The `else` doesn't distinguish a 401 (session really expired) from a transient failure (the server fails 5% of requests).
 - **Circular import with `store.ts`.** The wrapper imports `apiSlice` to dispatch `resetApiState`, and `store.ts` imports the wrapper. It works because `apiSlice` is only read inside the function, at request time, when both modules are fully loaded. Reading it at module top level would fail.
