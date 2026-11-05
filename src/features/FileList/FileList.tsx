@@ -7,6 +7,7 @@ import {
 import useVirtualList from "./useVirtualList";
 import FileListHeader from "./FileListHeader";
 import FileListRow from "./FileListRow";
+import { isFileRenamedEvent } from "./fileListEvents";
 import { useAppDispatch } from "../../store/hooks";
 
 const pageClass =
@@ -53,22 +54,29 @@ export default function FileList() {
 
         socket.onmessage = (event) => {
           console.log("Message received:", event.data);
-          const parsedDate = JSON.parse(event.data);
-          if (parsedDate.type === "file.renamed") {
-            dispatch(
-              apiSlice.util.updateQueryData("getFiles", undefined, (draft) => {
-                for (const page of draft.pages) {
-                  const file = page.items.find(
-                    (f) => f.id === parsedDate.data.id,
-                  );
-                  if (file) {
-                    file.name = parsedDate.data.name;
-                    break;
-                  }
-                }
-              }),
-            );
+          let parsedEvent: unknown;
+          try {
+            parsedEvent = JSON.parse(event.data);
+          } catch (error) {
+            console.error("Invalid WebSocket message:", error);
+            return;
           }
+
+          if (!isFileRenamedEvent(parsedEvent)) return;
+
+          dispatch(
+            apiSlice.util.updateQueryData("getFiles", undefined, (draft) => {
+              for (const page of draft.pages) {
+                const file = page.items.find(
+                  (f) => f.id === parsedEvent.payload.id,
+                );
+                if (file) {
+                  file.name = parsedEvent.payload.name;
+                  break;
+                }
+              }
+            }),
+          );
         };
 
         socket.onerror = (err) => {
