@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router";
 import { apiSlice, useLogoutMutation } from "../store/store";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 export default function Header() {
   const [logout, { isLoading }] = useLogoutMutation();
   const navigate = useNavigate();
-  const { data: meData } = useSelector(apiSlice.endpoints.me.select());
-  const dispatch = useDispatch();
+  const { data: meData } = useAppSelector(apiSlice.endpoints.me.select());
+  const dispatch = useAppDispatch();
 
   const onLogout = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
