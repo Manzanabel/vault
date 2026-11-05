@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import type { FileItem } from "../../store/types";
 import { formatBytes } from "../../utils/formatBytes";
+import { useEffect, useRef, useState } from "react";
 
 const rowClass =
   "table-row transition-colors hover:bg-slate-50 last:[&>div]:border-b-0 last:[&>div:first-child]:rounded-bl-xl last:[&>div:last-child]:rounded-br-xl";
@@ -15,8 +16,23 @@ interface FileListRowProps {
 }
 
 export default function FileListRow({ file }: FileListRowProps) {
+  const [blink, setBlink] = useState(false);
+
+  const fileName = useRef(file.name);
+
+  useEffect(() => {
+    if (fileName.current !== file.name) {
+      setBlink(true);
+      fileName.current = file.name;
+      const timer = setTimeout(() => setBlink(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [file.name]);
+
+  const rowClassWithBlink = blink ? `${rowClass} bg-yellow-100` : rowClass;
+
   return (
-    <div className={rowClass}>
+    <div className={rowClassWithBlink}>
       <div className={nameCellClass}>{file.name}</div>
       <div className={numberCellClass}>{formatBytes(file.size_bytes)}</div>
       <div className={cellClass}>{file.type}</div>

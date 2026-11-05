@@ -1,6 +1,6 @@
 export function isFileRenamedEvent(
   value: unknown,
-): value is { type: "file.renamed"; payload: { id: string; name: string } } {
+): value is { type: "file.renamed"; payload: { id: string; name: string; previous_name: string } } {
   if (
     typeof value !== "object" ||
     value === null ||

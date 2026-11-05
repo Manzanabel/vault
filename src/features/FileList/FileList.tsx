@@ -9,6 +9,7 @@ import FileListHeader from "./FileListHeader";
 import FileListRow from "./FileListRow";
 import { isFileRenamedEvent } from "./fileListEvents";
 import { useAppDispatch } from "../../store/hooks";
+import { toast } from "sonner";
 
 const pageClass =
   "mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 py-8";
@@ -76,6 +77,9 @@ export default function FileList() {
                 }
               }
             }),
+          );
+          toast.info(
+            `File name changed from "${parsedEvent.payload.previous_name}" to "${parsedEvent.payload.name}"`,
           );
         };
 
