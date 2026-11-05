@@ -12,7 +12,7 @@ const formatters = UNITS.map(
 );
 
 export function formatBytes(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes < 0) return "—";
+  if (!Number.isFinite(bytes) || bytes < 0) return "N/A";
 
   let value = bytes;
   let unit = 0;

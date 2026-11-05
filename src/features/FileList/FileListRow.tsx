@@ -18,9 +18,7 @@ export default function FileListRow({ file }: FileListRowProps) {
   return (
     <div className={rowClass}>
       <div className={nameCellClass}>{file.name}</div>
-      <div className={numberCellClass}>
-        {file.size_bytes ? formatBytes(file.size_bytes) : "N/A"}
-      </div>
+      <div className={numberCellClass}>{formatBytes(file.size_bytes)}</div>
       <div className={cellClass}>{file.type}</div>
       <div className={dateCellClass}>
         {dayjs(file.updated_at).format("YYYY-MM-DD HH:mm")}
