@@ -34,3 +34,8 @@ export interface MeResponse {
   id: string;
   name: string;
 }
+
+export interface GetWsTicketResponse {
+  url: string;
+  expires_at: string;
+}

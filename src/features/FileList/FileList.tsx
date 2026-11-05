@@ -1,8 +1,13 @@
-import { useRef, useMemo } from "react";
-import { useGetFilesInfiniteQuery } from "../../store/store";
+import { useRef, useMemo, useEffect } from "react";
+import {
+  apiSlice,
+  useGetFilesInfiniteQuery,
+  useGetWsTicketMutation,
+} from "../../store/store";
 import useVirtualList from "./useVirtualList";
 import FileListHeader from "./FileListHeader";
 import FileListRow from "./FileListRow";
+import { useAppDispatch } from "../../store/hooks";
 
 const pageClass =
   "mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-4 py-8";
@@ -28,7 +33,69 @@ export default function FileList() {
     [files],
   );
 
+  const dispatch = useAppDispatch();
+
   const parentRef = useRef<HTMLDivElement>(null);
+
+  const wsRef = useRef<WebSocket | null>(null);
+
+  const [getTicket] = useGetWsTicketMutation();
+
+  useEffect(() => {
+    const initWebSocket = async (url: string) => {
+      if (url) {
+        const socket = new WebSocket(url);
+        wsRef.current = socket;
+
+        socket.onopen = () => {
+          console.log("WebSocket connection established");
+        };
+
+        socket.onmessage = (event) => {
+          console.log("Message received:", event.data);
+          const parsedDate = JSON.parse(event.data);
+          if (parsedDate.type === "file.renamed") {
+            dispatch(
+              apiSlice.util.updateQueryData("getFiles", undefined, (draft) => {
+                for (const page of draft.pages) {
+                  const file = page.items.find(
+                    (f) => f.id === parsedDate.data.id,
+                  );
+                  if (file) {
+                    file.name = parsedDate.data.name;
+                    break;
+                  }
+                }
+              }),
+            );
+          }
+        };
+
+        socket.onerror = (err) => {
+          console.error("WebSocket error:", err);
+        };
+      }
+    };
+
+    const ticketReq = getTicket();
+
+    ticketReq
+      .unwrap()
+      .then((res) => {
+        initWebSocket(res.url);
+      })
+      .catch((err) => {
+        console.error("Error fetching WebSocket ticket:", err);
+      });
+
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close(1000, "component unmounted");
+      } else {
+        ticketReq.abort();
+      }
+    };
+  }, [getTicket, dispatch]);
 
   const onEndReached = () => {
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();

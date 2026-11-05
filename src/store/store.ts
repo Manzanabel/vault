@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { FilesResponse, MeResponse } from "./types";
+import type { FilesResponse, GetWsTicketResponse, MeResponse } from "./types";
 import { baseQueryWithReauth } from "./baseQueryWithReauth/baseQueryWithReauth";
 
 export const apiSlice = createApi({
@@ -41,6 +41,13 @@ export const apiSlice = createApi({
       query: ({ pageParam }) =>
         pageParam ? "/files?cursor=" + encodeURIComponent(pageParam) : "/files",
     }),
+    getWsTicket: builder.mutation<GetWsTicketResponse, void>({
+      query: () => ({
+        url: "/realtime/ticket",
+        method: "POST",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -48,6 +55,7 @@ export const { useGetFilesInfiniteQuery } = apiSlice;
 export const { useAuthMutation } = apiSlice;
 export const { useMeQuery } = apiSlice;
 export const { useLogoutMutation } = apiSlice;
+export const { useGetWsTicketMutation } = apiSlice;
 
 export const store = configureStore({
   reducer: {
