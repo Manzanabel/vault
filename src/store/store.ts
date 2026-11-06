@@ -1,4 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {
+  configureStore,
+  createSlice,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { FilesResponse, GetWsTicketResponse, MeResponse } from "./types";
 import { baseQueryWithReauth } from "./baseQueryWithReauth/baseQueryWithReauth";
@@ -44,14 +48,28 @@ export const apiSlice = createApi({
   }),
 });
 
+const wsSlice = createSlice({
+  name: "ws",
+  initialState: {
+    lastSeq: null as number | null,
+  },
+  reducers: {
+    setLastSeq: (state, action: PayloadAction<number>) => {
+      state.lastSeq = action.payload;
+    },
+  },
+});
+
 export const { useGetFilesInfiniteQuery } = apiSlice;
 export const { useMeQuery } = apiSlice;
 export const { useLogoutMutation } = apiSlice;
 export const { useGetWsTicketMutation } = apiSlice;
+export const { setLastSeq } = wsSlice.actions;
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
+    [wsSlice.reducerPath]: wsSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
