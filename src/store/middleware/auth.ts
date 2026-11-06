@@ -5,10 +5,8 @@ export const authMiddleware = async () => {
   const promise = store.dispatch(apiSlice.endpoints.me.initiate());
 
   try {
-    const data = await promise.unwrap();
-    console.log(data);
-  } catch (error: unknown) {
-    console.log(error);
+    await promise.unwrap();
+  } catch {
     throw redirect("/login");
   } finally {
     promise.unsubscribe();

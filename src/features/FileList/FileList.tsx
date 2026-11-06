@@ -49,12 +49,7 @@ export default function FileList() {
         const socket = new WebSocket(url);
         wsRef.current = socket;
 
-        socket.onopen = () => {
-          console.log("WebSocket connection established");
-        };
-
         socket.onmessage = (event) => {
-          console.log("Message received:", event.data);
           let parsedEvent: unknown;
           try {
             parsedEvent = JSON.parse(event.data);
