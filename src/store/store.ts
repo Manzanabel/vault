@@ -4,8 +4,15 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import type { FilesResponse, GetWsTicketResponse, MeResponse } from "./types";
+import type {
+  FilesResponse,
+  GetWsTicketResponse,
+  MeResponse,
+  WsState,
+} from "./types";
 import { baseQueryWithReauth } from "./baseQueryWithReauth/baseQueryWithReauth";
+
+// --- API (RTK Query) ---
 
 export const apiSlice = createApi({
   reducerPath: "api",
@@ -42,17 +49,18 @@ export const apiSlice = createApi({
       query: () => ({
         url: "/realtime/ticket",
         method: "POST",
-        credentials: "include",
       }),
     }),
   }),
 });
 
+// --- WebSocket state ---
+
+const initialState: WsState = { lastSeq: null };
+
 const wsSlice = createSlice({
   name: "ws",
-  initialState: {
-    lastSeq: null as number | null,
-  },
+  initialState,
   reducers: {
     setLastSeq: (state, action: PayloadAction<number>) => {
       state.lastSeq = action.payload;
@@ -60,11 +68,18 @@ const wsSlice = createSlice({
   },
 });
 
-export const { useGetFilesInfiniteQuery } = apiSlice;
-export const { useMeQuery } = apiSlice;
-export const { useLogoutMutation } = apiSlice;
-export const { useGetWsTicketMutation } = apiSlice;
+// --- Exports ---
+
+export const {
+  useGetFilesInfiniteQuery,
+  useMeQuery,
+  useLogoutMutation,
+  useGetWsTicketMutation,
+} = apiSlice;
+
 export const { setLastSeq } = wsSlice.actions;
+
+// --- Store ---
 
 export const store = configureStore({
   reducer: {

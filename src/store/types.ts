@@ -39,3 +39,5 @@ export interface GetWsTicketResponse {
   url: string;
   expires_at: string;
 }
+
+export type WsState = { lastSeq: number | null };
